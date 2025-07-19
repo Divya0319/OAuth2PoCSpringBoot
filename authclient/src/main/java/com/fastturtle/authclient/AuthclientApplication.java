@@ -21,6 +21,11 @@ public class AuthclientApplication {
 						.path("/hello")
 						.filters(GatewayFilterSpec::tokenRelay)
 						.uri("http://localhost:8081"))
+				.route(rs -> rs
+						.path("/api/coders")
+						.filters(GatewayFilterSpec::tokenRelay)
+						.uri("http://localhost:8000")
+				)
 				.build();
 	}
 
