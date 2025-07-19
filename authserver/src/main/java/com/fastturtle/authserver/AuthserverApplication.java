@@ -5,6 +5,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 
 @SpringBootApplication
@@ -15,17 +17,22 @@ public class AuthserverApplication {
 	}
 
 	@Bean
-	InMemoryUserDetailsManager inMemoryUserDetailsManager() {
-		UserDetails one = User.withDefaultPasswordEncoder()
+	PasswordEncoder passwordEncoder() {
+		return new BCryptPasswordEncoder();
+	}
+
+	@Bean
+	InMemoryUserDetailsManager inMemoryUserDetailsManager(PasswordEncoder passwordEncoder) {
+		UserDetails one = User.builder()
 				.username("sjohnr")
 				.roles("user")
-				.password("pw")
+				.password(passwordEncoder.encode("pw"))
 				.build();
 
-		UserDetails two = User.withDefaultPasswordEncoder()
+		UserDetails two = User.builder()
 				.username("divya")
-				.authorities("admin")
-				.password("pw")
+				.roles("admin")
+				.password(passwordEncoder.encode("pw"))
 				.build();
 
 		return new InMemoryUserDetailsManager(one, two);
